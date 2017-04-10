@@ -1,0 +1,54 @@
+#encoding: utf-8
+import sys
+def get_account_id(pstid):
+  qq = pstid & 0x0FFFFFFFF
+  #print ("qq: " )
+  return qq
+  
+def get_channel_id(pstid):
+	pstid >>= 59
+	pstid &= 0x0F
+	#print ("channel: ")
+	return pstid
+
+def get_zone_id(pstid):
+	channel = get_channel_id(pstid)
+	pstid >>= 43
+	pstid &= 0x0FFFF
+	#print ("zone: " )
+	return channel * 10000 + pstid
+	
+def make_pstid(channel,zone,qq,sex):
+	channel &= 0x0F
+	channel <<= 59
+	zone &= 0x0FFFF
+	zone <<= 43
+	sex &= 0x01
+	sex <<= 32
+	qq &= 0x0FFFFFFFF
+	pstid = 0
+	pstid = channel | zone | sex | qq
+	#print ("pstid: " )
+	return pstid
+def get_gender( pstid ):
+	c = (pstid >> 32) & 0x01
+	#print ("sex: " )
+	return c
+'''
+	qq=get_account_id(7810931475559013)
+'''
+ilen = len(sys.argv)
+if ilen == 2:
+  pstid = int(sys.argv[1])
+  print ("qq: %s" %(get_account_id(pstid)))
+  print ("channel: %s" %(get_channel_id(pstid)))
+  print ("zone: %s" %(get_zone_id(pstid)))
+  print ("sex: %s" %(get_gender(pstid)))
+elif ilen == 5:
+  pstid = int(sys.argv[1])
+  channel = int(sys.argv[2])
+  zone = int(sys.argv[3])
+  sex = int(sys.argv[4])
+  print ("pstid: %s" %(make_pstid(channel,zone,pstid,sex)))
+else:
+  print("input error, format eg: [pstid]or [qq,channel,zone,sex]")
