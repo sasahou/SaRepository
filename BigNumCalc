@@ -1,0 +1,315 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>pstid和qq互转</title>
+<script type="text/javascript">
+<!--字符串数组转成2进制数组-->
+function changeto2(num)
+{
+	var result=[];
+	while(num.length > 0)
+	{
+		<!--取余数-->
+		result.push(parseInt(num[num.length -1])%2);
+		<!--除2-->
+		var newnum=[];
+		var aaaa=0;
+		for(var i= 0;i<num.length;i++)
+		{
+			var j=parseInt(num[i]) + aaaa*10;
+			newnum.push( parseInt(j/2) );
+			aaaa = j%2;
+		}
+		<!--去掉起始位置的0-->
+		var aaaa = 0;
+		num = [];<!--重新赋值-->
+		for(var i= 0;i<newnum.length;i++)
+		{
+			if( newnum[i] == 0 && aaaa == 0)
+			{
+				continue;
+			}
+			aaaa =1;
+			num.push(newnum[i]);
+		}
+	}
+
+	return reverseArray(result);
+}
+<!--二进制数组转换成十进制数组-->
+function change2tonum(array)
+{
+	var total_sum=[];
+	for(var i= array.length-1,index=0;i>=0;i--,index++)
+	{
+		var tmp = array[i];
+		if( tmp == 0)
+		{
+			continue;
+		}
+		else
+		{
+			total_sum = addArray(total_sum , power2( index ) );
+		}
+	}
+	return total_sum;
+}
+<!--计算2的n次幂-->
+function power2(n)
+{
+	var array = [];
+	array.push(1);	
+	if(n == 0)	
+	{
+		return array;
+	}
+	while( n > 0 )
+	{
+		array = martix2(array);
+		n--;
+	}
+	return array;
+}
+
+<!--字符串数组乘2运算-->
+function martix2(array)
+{
+	var total_sum=[];
+	var quotient =0;
+	for(var i= array.length-1;i>=0;i--)
+	{
+		var tmp = array[i]*2 ;
+		total_sum.push((tmp + quotient)%10);
+		quotient = parseInt(tmp /10);
+	}
+	if(quotient != 0)
+		total_sum.push(quotient);
+	return reverseArray( total_sum );
+}
+
+<!--字符串数组相加运算-->
+function addArray(arr1,arr2)
+{
+	var cnt_1 = arr1.length;
+	var cnt_2 = arr2.length;
+	var result=[];
+	var quotient =0;
+	for(var i= cnt_1-1,j= cnt_2-1;i>=0||j>=0;i--,j--)
+	{
+		var tmp_1 = 0;
+		var tmp_2 = 0;
+		if( i>=0 ) 
+			tmp_1 = arr1[i];
+		if( j >=0 )
+			tmp_2 = arr2[j];
+		result.push( (tmp_1 +tmp_2 +quotient) %10);
+		quotient = parseInt( (tmp_1 +tmp_2 +quotient) /10);
+	}
+	if(quotient != 0)
+		result.push(quotient);
+	return reverseArray(result);
+}
+
+<!--字符串数组右移n位运算-->
+function rightN64(num,n)
+{
+	var tmp_num = changeto2(num);
+	var cnt = tmp_num.length;
+	if (n<cnt)
+	{
+		var result=[];
+		for(var i= 0;i<cnt-n;i++)
+		{
+			result.push(tmp_num[i]);
+		}
+		return result;
+	}
+	else
+	{
+		return 0;
+	}
+
+}
+<!--字符串数组左移n位运算-->
+function leftN64(num,n)
+{
+	if(num == 0)
+		return 0;
+	var tmp_num = changeto2(num);
+	for(var i= 0;i<n;i++)
+	{
+		tmp_num.push(0);
+	}
+	return tmp_num;
+}
+
+<!--字符串数组逆序运算-->
+function reverseArray(result)
+{
+	<!--逆序-->
+	var total_result=[];
+	var cnt = result.length;
+	for(var i= cnt-1;i>=0;i--)
+	{
+		total_result.push(result[i]);
+	}
+	return total_result;
+}
+
+<!--字符串数组与运算-->
+function andN64(num,n)
+{
+	var tmp_num = changeto2(num);
+	var tmp_n = changeto2(n);
+	var cnt_num = tmp_num.length;
+	var cnt_n = tmp_n.length;
+	var result=[];
+	for(var i= cnt_num-1,j= cnt_n-1;i>=0&&j>=0;i--,j--)
+	{
+		if(tmp_num[i] == 1&& tmp_n[j] ==1 ) 
+			result.push(1);
+		else
+			result.push(0);
+	}
+	<!--去掉结尾的0-->
+	var first = 0;
+	new_num = [];
+	for(var i= result.length-1;i>=0;i--)
+	{
+		if( result[i] == 0 && first == 0)
+		{
+			continue;
+		}
+		first =1;
+		new_num.push(result[i]);
+	}
+	return new_num;
+}
+
+<!--字符串数组或运算-->
+function orN64(num,n)
+{
+	var cnt_num = num.length;
+	var cnt_n = n.length;
+	var result=[];
+	for(var i= cnt_num-1,j= cnt_n-1;i>=0&&j>=0;i--,j--)
+	{
+		if(num[i] == 1 || n[j] ==1 ) 
+			result.push(1);
+		else
+			result.push(0);
+	}
+	while(i >= 0)
+	{
+		if( num[i--] == 1 )
+			result.push(1);
+		else 
+			result.push(0);
+	}
+	while( j >= 0)
+	{
+		if( n[j--] == 1 )
+			result.push(1);
+		else 
+			result.push(0);
+	}
+	return reverseArray(result);
+}
+
+</script>
+
+<script>
+function pstid2qq()
+{
+	var pstid = document.getElementById("pstid").value;
+	var qq = get_account_id(pstid);
+	var channel_id = get_channel_id(pstid);
+	var zone = get_zone_id(pstid);
+	var sex = get_gender(pstid);
+	document.getElementById("qq").value = qq;
+	document.getElementById("channel").value = channel_id;
+	document.getElementById("zone").value = zone;
+	document.getElementById("sex").value = sex;
+}
+
+function get_account_id(pstid)
+{
+	var qq = change2tonum( andN64(pstid , '4294967295'));
+	return qq.join("");
+}
+  
+function get_channel_id(pstid)
+{
+	pstid = change2tonum( rightN64(pstid,59) );
+	pstid = pstid.join("");
+	pstid = parseInt(pstid);
+	pstid &= 0x0F;
+	return pstid;
+}
+
+
+function get_zone_id(pstid)
+{
+	var channel = get_channel_id(pstid) ;
+	pstid = change2tonum(rightN64(pstid,43) );
+	pstid = pstid.join("");
+	pstid = parseInt(pstid);
+	pstid &= 0x0FFFF;
+	return channel * 10000 + pstid;
+}
+
+function get_gender( pstid )
+{
+	pstid = change2tonum(rightN64(pstid,32) );
+	pstid = pstid.join("");
+	pstid = parseInt(pstid);
+	pstid &= 0x01;
+	return pstid;
+}
+	
+function make_pstid()
+{
+	var qq = document.getElementById("qq").value;
+	var channel = document.getElementById("channel").value;
+	var zone = document.getElementById("zone").value;
+	var sex = document.getElementById("sex").value;
+	channel &= 0x0F;
+	
+	var arr_channel = leftN64(channel.toString(),59);
+	
+	zone &= 0x0FFFF;
+	var arr_zone  = leftN64(zone.toString(),43);
+	sex &= 0x01;
+	var arr_sex = leftN64(sex.toString(),32);
+	var arr_qq = andN64(qq,'4294967295');
+	var pstid = [];
+	pstid = orN64(arr_channel,arr_zone);
+	pstid = orN64(pstid,arr_sex);
+	pstid = orN64(pstid,arr_qq);
+	pstid = change2tonum(pstid);
+	document.getElementById("pstid").value = pstid.join("");
+	return 0;
+
+}
+
+</script>
+</head>
+<body>
+<div class="table-c"> 
+<table width="400" border="0" cellspacing="0" cellpadding="10"> 
+	<tr> 
+		<td width="80" >pstid:<input type="text" id="pstid" value=""></td>
+		<td width="80" ><button onclick="pstid2qq()">计算qq和大区</button><br></td> 
+	</tr> 
+	<tr> 
+		<td width="80">qq: <input type="text" id="qq"></td> 
+		<td width="80">channel:<input type="text" id ="channel"></td> 
+		<td width="80">zone:<input type="text" id ="zone"></td> 
+		<td width="80">sex:<input type="text" id ="sex"></td> 
+		<td width="180"><button onclick="make_pstid()">计算pstid</button><br></td>
+	</tr> 
+</table> 
+
+</body>
+</html>
